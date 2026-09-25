@@ -64,6 +64,11 @@ sim.addEventListener("click", () => {
 
 const calendario = document.getElementById("calendario");
 const escolha = document.getElementById("escolha");
+const aviso = document.getElementById("aviso");
+const AVISO_URL = "https://formsubmit.co/ajax/joseedua2sam@gmail.com";
+
+let avisoTimer = null;
+let avisoSeq = 0;
 
 const DIAS = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
 const MESES = [
@@ -161,6 +166,7 @@ function renderCalendario() {
       const formatada = data.toLocaleDateString("pt-BR", { day: "numeric", month: "long" });
       escolha.hidden = false;
       escolha.textContent = `Combinado! Te vejo dia ${formatada}`;
+      avisarEscolha(formatada);
       renderCalendario();
     });
 
@@ -168,6 +174,54 @@ function renderCalendario() {
   }
 
   calendario.append(nav, grade);
+}
+
+function avisarEscolha(formatada) {
+  const seq = ++avisoSeq;
+  aviso.hidden = false;
+  aviso.textContent = "Avisando ele...";
+  clearTimeout(avisoTimer);
+  avisoTimer = setTimeout(() => enviarEscolha(formatada, seq), 700);
+}
+
+async function enviarEscolha(formatada, seq, tentativa = 0) {
+  try {
+    const resposta = await fetch(AVISO_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        escolha: formatada,
+        mensagem: `Ela escolheu o dia ${formatada} para o encontro.`,
+        _subject: `Ela escolheu ${formatada}`,
+        _template: "box",
+        _captcha: "false",
+      }),
+    });
+    const corpo = await resposta.json();
+    if (seq !== avisoSeq) return;
+    const ok = corpo.success === true || corpo.success === "true";
+    if (!ok && tentativa < 1) {
+      await esperar(800);
+      return enviarEscolha(formatada, seq, tentativa + 1);
+    }
+    aviso.textContent = ok
+      ? "Pronto, ele já ficou sabendo."
+      : "Não consegui avisar agora. Toca no dia de novo.";
+  } catch {
+    if (seq !== avisoSeq) return;
+    if (tentativa < 1) {
+      await esperar(800);
+      return enviarEscolha(formatada, seq, tentativa + 1);
+    }
+    aviso.textContent = "Não consegui avisar agora. Toca no dia de novo.";
+  }
+}
+
+function esperar(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 renderCalendario();

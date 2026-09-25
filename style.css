@@ -199,28 +199,8 @@ h1 {
   font-weight: 800;
 }
 
-.roteiro {
-  list-style: none;
-  margin-top: 16px;
-  display: grid;
-  gap: 10px;
-}
-
-.roteiro li {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  font-weight: 700;
-}
-
-.roteiro span {
-  flex: 0 0 4.4rem;
-  color: #f2548a;
-  font-weight: 800;
-}
-
 .escolhe {
-  margin-top: 20px;
+  margin-top: 16px;
   text-align: center;
   font-size: 1.05rem;
   font-weight: 800;
@@ -321,5 +301,17 @@ h1 {
 }
 
 .escolha[hidden] {
+  display: none;
+}
+
+.aviso {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #a05a78;
+}
+
+.aviso[hidden] {
   display: none;
 }
