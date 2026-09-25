@@ -1,0 +1,179 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  font-family: "Nunito", "Segoe UI Emoji", "Apple Color Emoji", system-ui, sans-serif;
+  color: #5c3048;
+  background: linear-gradient(160deg, #ffe4ee 0%, #fff6f0 45%, #fff 100%);
+  overflow: hidden;
+}
+
+.hearts {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hearts span {
+  position: absolute;
+  font-size: 1.4rem;
+  opacity: 0.55;
+  animation: flutuar 9s ease-in-out infinite;
+}
+
+.hearts span:nth-child(1) { left: 8%; top: 12%; animation-delay: 0s; }
+.hearts span:nth-child(2) { left: 22%; top: 70%; animation-delay: 1.2s; font-size: 1.1rem; }
+.hearts span:nth-child(3) { left: 78%; top: 18%; animation-delay: 0.6s; }
+.hearts span:nth-child(4) { left: 88%; top: 62%; animation-delay: 2s; }
+.hearts span:nth-child(5) { left: 48%; top: 8%; animation-delay: 1.6s; font-size: 1.8rem; }
+.hearts span:nth-child(6) { left: 12%; top: 42%; animation-delay: 2.8s; }
+.hearts span:nth-child(7) { left: 68%; top: 78%; animation-delay: 0.4s; }
+.hearts span:nth-child(8) { left: 36%; top: 84%; animation-delay: 2.2s; }
+
+@keyframes flutuar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-18px); }
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  width: min(420px, 100%);
+  padding: 28px 22px 26px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.86);
+  border-radius: 28px;
+  box-shadow: 0 18px 50px rgba(214, 120, 160, 0.22);
+}
+
+.sparkles {
+  letter-spacing: 0.35em;
+  margin-bottom: 14px;
+  font-size: 1.05rem;
+}
+
+.foto {
+  width: 180px;
+  height: 240px;
+  object-fit: cover;
+  object-position: center 18%;
+  border-radius: 22px;
+  border: 4px solid #fff;
+  box-shadow: 0 10px 24px rgba(180, 90, 130, 0.25);
+}
+
+h1 {
+  margin-top: 18px;
+  font-size: clamp(1.7rem, 6vw, 2.15rem);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.sub {
+  margin-top: 8px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #a05a78;
+}
+
+.botoes {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 22px;
+  min-height: 52px;
+}
+
+.btn {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 28px;
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sim {
+  color: #fff;
+  background: linear-gradient(180deg, #ff7aa8, #f2548a);
+  box-shadow: 0 8px 18px rgba(242, 84, 138, 0.35);
+}
+
+.sim:hover {
+  transform: scale(1.06);
+}
+
+.nao {
+  color: #8a5a70;
+  background: #f3e4eb;
+  z-index: 2;
+}
+
+.nao.fugindo {
+  position: fixed;
+  margin: 0;
+  transition: left 0.18s ease, top 0.18s ease;
+}
+
+.celebracao {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, #ffd6e8 0%, #fff4f8 50%, #fff 100%);
+}
+
+.celebracao[hidden] {
+  display: none;
+}
+
+.mensagem {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 24px;
+}
+
+.grande {
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.mensagem p + p {
+  margin-top: 12px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #c45b86;
+}
+
+.chuva {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.chuva span {
+  position: absolute;
+  top: -10%;
+  animation: cair linear forwards;
+}
+
+@keyframes cair {
+  to {
+    transform: translateY(110vh) rotate(20deg);
+    opacity: 0.2;
+  }
+}
