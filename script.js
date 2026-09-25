@@ -65,7 +65,10 @@ sim.addEventListener("click", () => {
 const calendario = document.getElementById("calendario");
 const escolha = document.getElementById("escolha");
 const aviso = document.getElementById("aviso");
-const AVISO_URL = "https://formsubmit.co/ajax/joseedua2sam@gmail.com";
+const avisoForm = document.getElementById("aviso-form");
+const avisoFrame = document.getElementById("aviso-frame");
+const avisoAssunto = document.getElementById("aviso-assunto");
+const avisoMensagem = document.getElementById("aviso-mensagem");
 
 let avisoTimer = null;
 let avisoSeq = 0;
@@ -184,44 +187,21 @@ function avisarEscolha(formatada) {
   avisoTimer = setTimeout(() => enviarEscolha(formatada, seq), 700);
 }
 
-async function enviarEscolha(formatada, seq, tentativa = 0) {
-  try {
-    const resposta = await fetch(AVISO_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        escolha: formatada,
-        mensagem: `Ela escolheu o dia ${formatada} para o encontro.`,
-        _subject: `Ela escolheu ${formatada}`,
-        _template: "box",
-        _captcha: "false",
-      }),
-    });
-    const corpo = await resposta.json();
-    if (seq !== avisoSeq) return;
-    const ok = corpo.success === true || corpo.success === "true";
-    if (!ok && tentativa < 1) {
-      await esperar(800);
-      return enviarEscolha(formatada, seq, tentativa + 1);
-    }
-    aviso.textContent = ok
-      ? "Pronto, ele já ficou sabendo."
-      : "Não consegui avisar agora. Toca no dia de novo.";
-  } catch {
-    if (seq !== avisoSeq) return;
-    if (tentativa < 1) {
-      await esperar(800);
-      return enviarEscolha(formatada, seq, tentativa + 1);
-    }
-    aviso.textContent = "Não consegui avisar agora. Toca no dia de novo.";
-  }
-}
+function enviarEscolha(formatada, seq) {
+  avisoAssunto.value = `Ela escolheu ${formatada}`;
+  avisoMensagem.value = `Ela escolheu o dia ${formatada} para o encontro.`;
 
-function esperar(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  let concluido = false;
+  const concluir = () => {
+    if (concluido || seq !== avisoSeq) return;
+    concluido = true;
+    avisoFrame.removeEventListener("load", concluir);
+    aviso.textContent = "Pronto, ele já ficou sabendo.";
+  };
+
+  avisoFrame.addEventListener("load", concluir);
+  avisoForm.submit();
+  setTimeout(concluir, 4000);
 }
 
 renderCalendario();
