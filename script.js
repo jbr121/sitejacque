@@ -61,3 +61,113 @@ sim.addEventListener("click", () => {
   soltarCoracoes();
   celebracao.hidden = false;
 });
+
+const calendario = document.getElementById("calendario");
+const escolha = document.getElementById("escolha");
+
+const DIAS = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+const MESES = [
+  "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+  "julho", "agosto", "setembro", "outubro", "novembro", "dezembro",
+];
+
+const hoje = new Date();
+hoje.setHours(0, 0, 0, 0);
+
+let mesVisivel = hoje.getMonth();
+let anoVisivel = hoje.getFullYear();
+let diaEscolhido = null;
+
+function mesmoDia(a, b) {
+  return a && b
+    && a.getFullYear() === b.getFullYear()
+    && a.getMonth() === b.getMonth()
+    && a.getDate() === b.getDate();
+}
+
+function mudarMes(delta) {
+  mesVisivel += delta;
+  if (mesVisivel < 0) {
+    mesVisivel = 11;
+    anoVisivel -= 1;
+  }
+  if (mesVisivel > 11) {
+    mesVisivel = 0;
+    anoVisivel += 1;
+  }
+  renderCalendario();
+}
+
+function renderCalendario() {
+  const primeiro = new Date(anoVisivel, mesVisivel, 1);
+  const inicio = primeiro.getDay();
+  const total = new Date(anoVisivel, mesVisivel + 1, 0).getDate();
+  const podeVoltar = anoVisivel > hoje.getFullYear()
+    || (anoVisivel === hoje.getFullYear() && mesVisivel > hoje.getMonth());
+
+  calendario.replaceChildren();
+
+  const nav = document.createElement("div");
+  nav.className = "cal-nav";
+
+  const voltar = document.createElement("button");
+  voltar.type = "button";
+  voltar.textContent = "‹";
+  voltar.setAttribute("aria-label", "Mês anterior");
+  voltar.disabled = !podeVoltar;
+  voltar.addEventListener("click", () => mudarMes(-1));
+
+  const titulo = document.createElement("p");
+  titulo.className = "cal-mes";
+  titulo.textContent = `${MESES[mesVisivel]} ${anoVisivel}`;
+
+  const avancar = document.createElement("button");
+  avancar.type = "button";
+  avancar.textContent = "›";
+  avancar.setAttribute("aria-label", "Próximo mês");
+  avancar.addEventListener("click", () => mudarMes(1));
+
+  nav.append(voltar, titulo, avancar);
+
+  const grade = document.createElement("div");
+  grade.className = "cal-grade";
+
+  DIAS.forEach((nome) => {
+    const celula = document.createElement("span");
+    celula.className = "cal-semana";
+    celula.textContent = nome;
+    grade.appendChild(celula);
+  });
+
+  for (let i = 0; i < inicio; i++) {
+    const vazio = document.createElement("span");
+    vazio.className = "cal-vazio";
+    grade.appendChild(vazio);
+  }
+
+  for (let dia = 1; dia <= total; dia++) {
+    const data = new Date(anoVisivel, mesVisivel, dia);
+    const botao = document.createElement("button");
+    botao.type = "button";
+    botao.className = "cal-dia";
+    botao.textContent = String(dia);
+
+    if (data < hoje) botao.disabled = true;
+    if (mesmoDia(data, hoje)) botao.classList.add("hoje");
+    if (mesmoDia(data, diaEscolhido)) botao.classList.add("escolhido");
+
+    botao.addEventListener("click", () => {
+      diaEscolhido = data;
+      const formatada = data.toLocaleDateString("pt-BR", { day: "numeric", month: "long" });
+      escolha.hidden = false;
+      escolha.textContent = `Combinado! Te vejo dia ${formatada}`;
+      renderCalendario();
+    });
+
+    grade.appendChild(botao);
+  }
+
+  calendario.append(nav, grade);
+}
+
+renderCalendario();
